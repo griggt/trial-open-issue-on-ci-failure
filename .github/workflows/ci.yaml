@@ -210,7 +210,7 @@ jobs:
          && startsWith(github.event.ref, 'refs/tags/sbt-dotty-')"
     steps:
       - name: Publish
-        run: /bin/false
+        run: /bin/true
 
   open_issue_on_failure:
     runs-on: [self-hosted, Linux]

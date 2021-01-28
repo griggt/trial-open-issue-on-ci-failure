@@ -199,7 +199,7 @@ jobs:
          && !startsWith(github.event.ref, 'refs/tags/sbt-dotty-')"
     steps:
       - name: Deploy
-        run: /bin/false
+        run: /bin/true
 
   publish_sbt_release:
     runs-on: [self-hosted, Linux]

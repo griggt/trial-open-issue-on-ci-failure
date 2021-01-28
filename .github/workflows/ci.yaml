@@ -175,7 +175,7 @@ jobs:
          || github.event_name == 'workflow_dispatch'"
     steps:
       - name: Deploy Website
-        run: /bin/true
+        run: /bin/false
 
   publish_release:
     runs-on: [self-hosted, Linux]

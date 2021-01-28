@@ -48,7 +48,7 @@ jobs:
          )"
     steps:
       - name: Test
-        run: /bin/true
+        run: /bin/false
 
   test_windows_fast:
     runs-on: [self-hosted, Linux]

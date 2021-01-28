@@ -153,7 +153,7 @@ jobs:
          )"
     steps:
       - name: Test
-        run: /bin/true
+        run: /bin/false
 
   publish_nightly:
     runs-on: [self-hosted, Linux]

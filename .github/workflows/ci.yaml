@@ -117,7 +117,7 @@ jobs:
          )"
     steps:
       - name: Test
-        run: /bin/false
+        run: /bin/true
 
   test_sbt:
     runs-on: [self-hosted, Linux]

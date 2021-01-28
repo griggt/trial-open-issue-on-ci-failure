@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 #  schedule:
 #    - cron: '*/10 * * * *'
-# All jobs should succeed
+
 jobs:
   test_non_bootstrapped:
     runs-on: [self-hosted, Linux]

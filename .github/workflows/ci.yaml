@@ -1,0 +1,237 @@
+name: Dotty
+
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - '*'
+  pull_request:
+  workflow_dispatch:
+#  schedule:
+#    - cron: '*/10 * * * *'
+
+jobs:
+  test_non_bootstrapped:
+    runs-on: [self-hosted, Linux]
+    container:
+      image: lampepfl/dotty:2020-11-19
+    if: "github.event_name == 'schedule'
+         || github.event_name == 'workflow_dispatch'
+         || (
+           github.event_name == 'push'
+           && !startsWith(github.event.ref, 'refs/tags/sbt-dotty-')
+         )
+         || (
+           github.event_name == 'pull_request'
+           && !contains(github.event.pull_request.body, '[skip ci]')
+           && contains(github.event.pull_request.body, '[test_non_bootstrapped]')
+         )"
+    steps:
+      - name: Test
+        run: /bin/true
+
+  test:
+    runs-on: [self-hosted, Linux]
+    container:
+      image: lampepfl/dotty:2020-11-19
+    if: "github.event_name == 'schedule'
+         || github.event_name == 'workflow_dispatch'
+         || (
+           github.event_name == 'push'
+           && !startsWith(github.event.ref, 'refs/tags/sbt-dotty-')
+         )
+         || (
+           github.event_name == 'pull_request'
+           && !contains(github.event.pull_request.body, '[skip ci]')
+           && !contains(github.event.pull_request.body, '[skip test]')
+         )"
+    steps:
+      - name: Test
+        run: /bin/true
+
+  test_windows_fast:
+    runs-on: [self-hosted, Linux]
+    container:
+      image: lampepfl/dotty:2020-11-19
+    if: "(
+           github.event_name == 'push'
+           && github.ref != 'refs/heads/master'
+           && !startsWith(github.event.ref, 'refs/tags/sbt-dotty-')
+         )
+         || (
+           github.event_name == 'pull_request'
+           && !contains(github.event.pull_request.body, '[skip ci]')
+           && !contains(github.event.pull_request.body, '[skip test_windows_fast]')
+         )"
+    steps:
+      - name: Test
+        run: /bin/true
+
+  test_windows_full:
+    runs-on: [self-hosted, Linux]
+    container:
+      image: lampepfl/dotty:2020-11-19
+    if: "github.event_name == 'schedule'
+         || github.event_name == 'workflow_dispatch'
+         || (
+           github.event_name == 'push'
+           && !startsWith(github.event.ref, 'refs/tags/sbt-dotty-')
+         )
+         || (
+           github.event_name == 'pull_request'
+           && !contains(github.event.pull_request.body, '[skip ci]')
+           && contains(github.event.pull_request.body, '[test_windows_full]')
+         )"
+    steps:
+      - name: Test
+        run: /bin/true
+
+  community_build_a:
+    runs-on: [self-hosted, Linux]
+    container:
+      image: lampepfl/dotty:2020-11-19
+    if: "github.event_name == 'schedule'
+         || github.event_name == 'workflow_dispatch'
+         || github.event_name == 'push'
+         || (
+           github.event_name == 'pull_request'
+           && !contains(github.event.pull_request.body, '[skip ci]')
+           && !contains(github.event.pull_request.body, '[skip community_build]')
+         )"
+    steps:
+      - name: Test
+        run: /bin/true
+
+  community_build_b:
+    runs-on: [self-hosted, Linux]
+    container:
+      image: lampepfl/dotty:2020-11-19
+    if: "github.event_name == 'schedule'
+         || github.event_name == 'workflow_dispatch'
+         || github.event_name == 'push'
+         || (
+           github.event_name == 'pull_request'
+           && !contains(github.event.pull_request.body, '[skip ci]')
+           && !contains(github.event.pull_request.body, '[skip community_build]')
+         )"
+    steps:
+      - name: Test
+        run: /bin/true
+
+  test_sbt:
+    runs-on: [self-hosted, Linux]
+    container:
+      image: lampepfl/dotty:2020-11-19
+    if: "github.event_name == 'schedule'
+         || github.event_name == 'workflow_dispatch'
+         || github.event_name == 'push'
+         || (
+           github.event_name == 'pull_request'
+           && !contains(github.event.pull_request.body, '[skip ci]')
+           && !contains(github.event.pull_request.body, '[skip test_sbt]')
+         )"
+    steps:
+      - name: Test
+        run: /bin/true
+
+  test_java8:
+    runs-on: [self-hosted, Linux]
+    container:
+      image: lampepfl/dotty:2020-11-19
+    if: "github.event_name == 'schedule'
+         || github.event_name == 'workflow_dispatch'
+         || (
+           github.event_name == 'push'
+           && startsWith(github.event.ref, 'refs/tags/')
+           && !startsWith(github.event.ref, 'refs/tags/sbt-dotty-')
+         )
+         || (
+           github.event_name == 'pull_request'
+           && !contains(github.event.pull_request.body, '[skip ci]')
+           && contains(github.event.pull_request.body, '[test_java8]')
+         )"
+    steps:
+      - name: Test
+        run: /bin/true
+
+  publish_nightly:
+    runs-on: [self-hosted, Linux]
+    container:
+      image: lampepfl/dotty:2020-11-19
+    needs: [test_non_bootstrapped, test, community_build_a, community_build_b, test_sbt, test_java8]
+    if: "github.event_name == 'schedule'
+         || github.event_name == 'workflow_dispatch'"
+    steps:
+      - name: Publish
+        run: /bin/true
+
+  nightly_documentation:
+    runs-on: [self-hosted, Linux]
+    container:
+      image: lampepfl/dotty:2020-11-19
+    needs: [publish_nightly]
+    if: "github.event_name == 'schedule'
+         || github.event_name == 'workflow_dispatch'"
+    steps:
+      - name: Deploy Website
+        run: /bin/true
+
+  publish_release:
+    runs-on: [self-hosted, Linux]
+    container:
+      image: lampepfl/dotty:2020-11-19
+    needs: [test_non_bootstrapped, test, community_build_a, community_build_b, test_sbt, test_java8]
+    if: "github.event_name == 'push'
+         && startsWith(github.event.ref, 'refs/tags/')
+         && !startsWith(github.event.ref, 'refs/tags/sbt-dotty-')"
+    steps:
+      - name: Publish
+        run: /bin/true
+
+  release_documentation:
+    runs-on: [self-hosted, Linux]
+    container:
+      image: lampepfl/dotty:2020-11-19
+    needs: [publish_release]
+    if: "github.event_name == 'push'
+         && startsWith(github.event.ref, 'refs/tags/')
+         && !startsWith(github.event.ref, 'refs/tags/sbt-dotty-')"
+    steps:
+      - name: Deploy
+        run: /bin/true
+
+  publish_sbt_release:
+    runs-on: [self-hosted, Linux]
+    container:
+      image: lampepfl/dotty:2020-11-19
+    needs: [community_build_a, community_build_b, test_sbt]
+    if: "github.event_name == 'push'
+         && startsWith(github.event.ref, 'refs/tags/sbt-dotty-')"
+    steps:
+      - name: Publish
+        run: /bin/true
+
+  open_issue_on_failure:
+    runs-on: [self-hosted, Linux]
+    container:
+      image: lampepfl/dotty:2020-11-19
+    needs: [nightly_documentation, test_windows_full]
+    # The `failure()` expression is true iff at least one of the dependencies
+    # of this job (including transitive dependencies) has failed.
+    if: "failure()
+         && (
+           github.event_name == 'schedule'
+           || github.event_name == 'workflow_dispatch'
+         )"
+    steps:
+      - name: Checkout issue template
+        uses: actions/checkout@v2
+
+      - name: Open an issue
+        uses: JasonEtco/create-an-issue@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WORKFLOW_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        with:
+          filename: .github/workflows/issue_nightly_failed.md

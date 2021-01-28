@@ -133,7 +133,7 @@ jobs:
          )"
     steps:
       - name: Test
-        run: /bin/false
+        run: /bin/true
 
   test_java8:
     runs-on: [self-hosted, Linux]

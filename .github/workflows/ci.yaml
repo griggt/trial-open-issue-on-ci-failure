@@ -164,7 +164,7 @@ jobs:
          || github.event_name == 'workflow_dispatch'"
     steps:
       - name: Publish
-        run: /bin/true
+        run: /bin/false
 
   nightly_documentation:
     runs-on: [self-hosted, Linux]

@@ -101,7 +101,7 @@ jobs:
          )"
     steps:
       - name: Test
-        run: /bin/false
+        run: /bin/true
 
   community_build_b:
     runs-on: [self-hosted, Linux]
